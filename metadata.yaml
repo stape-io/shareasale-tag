@@ -1,0 +1,5 @@
+homepage: "https://stape.io/"
+documentation: "https://github.com/stape-io/shareasale-tag"
+versions:
+  - sha: 8518760e49f4fa617f69adb6763ca6e4c0e69c45
+    changeNotes: Initial release.
