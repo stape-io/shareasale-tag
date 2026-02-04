@@ -1,15 +1,21 @@
-﻿const sendHttpRequest = require('sendHttpRequest');
-const setCookie = require('setCookie');
-const parseUrl = require('parseUrl');
-const JSON = require('JSON');
-const getRequestHeader = require('getRequestHeader');
+﻿/// <reference path="server-gtm-sandboxed-apis.d.ts" />
+
 const encodeUriComponent = require('encodeUriComponent');
-const getCookieValues = require('getCookieValues');
 const getAllEventData = require('getAllEventData');
-const logToConsole = require('logToConsole');
 const getContainerVersion = require('getContainerVersion');
-const makeString = require('makeString');
+const getCookieValues = require('getCookieValues');
+const getRequestHeader = require('getRequestHeader');
+const getType = require('getType');
+const JSON = require('JSON');
+const logToConsole = require('logToConsole');
 const makeNumber = require('makeNumber');
+const makeString = require('makeString');
+const parseUrl = require('parseUrl');
+const sendHttpRequest = require('sendHttpRequest');
+const setCookie = require('setCookie');
+
+/*==============================================================================
+==============================================================================*/
 
 const containerVersion = getContainerVersion();
 const isDebug = containerVersion.debugMode;
@@ -17,7 +23,7 @@ const isLoggingEnabled = determinateIsLoggingEnabled();
 const traceId = getRequestHeader('trace-id');
 const eventData = getAllEventData();
 
-if (!isConsentGivenOrNotRequired()) {
+if (!isConsentGivenOrNotRequired(data, eventData)) {
   return data.gtmOnSuccess();
 }
 
@@ -84,6 +90,10 @@ if (data.type === 'page_view') {
   );
 }
 
+/*==============================================================================
+Vendor related functions
+==============================================================================*/
+
 function getRequestUrl() {
   let requestUrl = 'https://www.shareasale.com/sale.cfm?v=stape';
   requestUrl = requestUrl + '&transtype=' + enc(data.transtype);
@@ -102,9 +112,20 @@ function getRequestUrl() {
   return requestUrl;
 }
 
+/*==============================================================================
+Helpers
+==============================================================================*/
+
 function enc(data) {
-  data = data || '';
+  if (['null', 'undefined'].indexOf(getType(data)) !== -1) data = '';
   return encodeUriComponent(makeString(data));
+}
+
+function isConsentGivenOrNotRequired(data, eventData) {
+  if (data.adStorageConsent !== 'required') return true;
+  if (eventData.consent_state) return !!eventData.consent_state.ad_storage;
+  const xGaGcs = eventData['x-ga-gcs'] || ''; // x-ga-gcs is a string like "G110"
+  return xGaGcs[2] === '1';
 }
 
 function determinateIsLoggingEnabled() {
@@ -121,11 +142,4 @@ function determinateIsLoggingEnabled() {
   }
 
   return data.logType === 'always';
-}
-
-function isConsentGivenOrNotRequired() {
-  if (data.adStorageConsent !== 'required') return true;
-  if (eventData.consent_state) return !!eventData.consent_state.ad_storage;
-  const xGaGcs = eventData['x-ga-gcs'] || ''; // x-ga-gcs is a string like "G110"
-  return xGaGcs[2] === '1';
 }
