@@ -9,12 +9,16 @@ There are two types of events that ShareASale tag includes: PageView and Convers
 
 **Pageview** - add the ShareASale tag to the pageview event.
 
-**Conversion events** 
+**Conversion events**
 
 Required parameters:
+
 - **Merchant ID** - ShareASale assigned ID for your program
 - **Transaction Type** - This is a ShareASale assigned value that identifies the action being tracked
 
+## Useful links:
+
+[Step-by-step guide on how to configure ShareASale tag](https://stape.io/blog/shareasale-gtm-tag-setup)
 
 ## Open Source
 
