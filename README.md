@@ -16,7 +16,7 @@ Required parameters:
 - **Merchant ID** - ShareASale assigned ID for your program
 - **Transaction Type** - This is a ShareASale assigned value that identifies the action being tracked
 
-## Useful links:
+## Useful Resources
 
 [Step-by-step guide on how to configure ShareASale tag](https://stape.io/blog/shareasale-gtm-tag-setup)
 
